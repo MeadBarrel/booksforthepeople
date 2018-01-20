@@ -175,8 +175,3 @@ function GuiInventoryItem::onMouseEnter(%this)
   Parent.onMouseEnter(%this);
   $book_mod_global.setHighlightedItemId(%this.getId());
 }
-
-
-GlobalActionMap.bindObj(keyboard, "ctrl p", "tryReadBook", $book_mod_global);
-$book_mod_global.schedule(1000, "setBookNamesInAllContainers");
-//usage: exec("art/mod/booksforthepeople/bookmod.cs");
