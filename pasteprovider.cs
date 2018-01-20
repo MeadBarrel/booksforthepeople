@@ -2,6 +2,13 @@ new ScriptObject(PasteProvider)
 {
 };
 
+
+function PasteProvider::init(%this)
+{
+  createPath(%this.getBookStoragePath());
+}
+
+
 function PasteProvider::readBook(%this, %tag)
 {
   %this.web_last = openWeb(%this.getBookUrl(%tag));
@@ -25,4 +32,40 @@ function PasteProvider::getBookId(%this, %tag)
 function PasteProvider::isCorrectTag(%this, %tag)
 {
   return startsWith(%tag, %this.prefix);
+}
+
+
+function PasteProvider::download(%this, %tag)
+{
+  %downloader = new ScriptObject() {
+    class = PasteDownloader;
+    tag = %tag;
+    provider = %this;
+  };
+  %downloader.download();
+}
+
+
+function PasteProvider::getBookStoragePath(%this)
+{
+  return $book_mod_global.mod_folder @ %this.prefix @ "/";
+}
+
+
+function PasteProvider::getBookFilename(%this, %tag)
+{
+  return %this.getBookStoragePath() @ %tag;
+}
+
+
+function PasteDownloader::download(%this, %tag)
+{
+  echo("DOWNLOADING", %tag);
+  %download_helper = new SimDownloadHelper()
+  {
+    url = %this.provider.getBookUrl(%this.tag);
+    fileName = %this.provider.getBookFilename(%this.tag);
+  };
+  echo("FILENAME", %download_helper.fileName);
+  %download_helper.start();
 }

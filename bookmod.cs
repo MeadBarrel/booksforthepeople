@@ -4,10 +4,22 @@ new ScriptObject(book_mod)
   highlighted_item_id = -1;
   mod_folder = "art/mod/booksforthepeople/";
   book_bitmap = "art/2d/items/pages.png";
-  providers[0] = pastebin_provider.getId();
+  pastebin_provider_obj = pastebin_provider.getId();
+
+  modify_inventories_delay = 1000;
 };
 
 
+// Initializer
+function BookMod::init(%this)
+{
+  %this.pastebin_provider_obj.init();
+  %this.schedule(1000, "modifyInventories");
+  GlobalActionMap.bindObj(keyboard, "ctrl p", "tryReadHighlightedBook", %this);
+}
+
+
+// Set last highlighted item
 function BookMod::setHighlightedItemId(%this, %item_id)
 {
   %this.highlighted_item_id = %item_id;
@@ -44,15 +56,8 @@ function BookMod::tryReadHighlightedBook(%this, %keystate)
 // If no provider is found, return "" meaning it's not a book
 function BookMod::getBookProvider(%this, %tag)
 {
-  %i = 0;
-  %provider = %this.providers[%i];
-  while (%provider)
-  {
-    echo("CHECKING", %provider);
-    if (%provider.isCorrectTag(%tag)) return %provider;
-    %i+=1;
-  }
-  return ;
+  if (%this.pastebin_provider_obj.isCorrectTag(%tag))
+    return %this.pastebin_provider_obj;
 }
 
 
@@ -62,5 +67,75 @@ function BookMod::getObjTag(%this, %obj)
   if (%obj.stored_tag !$= "") return %obj.stored_tag;
   return %obj.getText();
 }
+
+
+// Iterate over player's inventories and change books titles and icons
+function BookMod::modifyInventories(%this)
+{
+  echo("Setting book names");
+  %i_max = PlayGui.getCount();
+  for (%i=0;%i<%i_max;%i++)
+  {
+    %obj = PlayGui.getObject(%i);
+    if (%obj.isMemberOfClass("GuiInventoryContainer"))
+    {
+      %this.modifyInventory(%obj);
+    }
+  }
+  %this.schedule(%this.modify_inventories_delay, "modifyInventories");
+
+}
+
+
+function BookMod::modifyInventory(%this, %container)
+{
+  %i_max = %container.getCount();
+  for (%i=0; %i<%i_max; %i++)
+  {
+    %obj = %container.getObject(%i);
+    if (%obj.isMemberOfClass("GuiInventoryItem"))
+    {
+      %this.modifyInventoryItem(%obj);
+    }
+  }
+}
+
+
+function BookMod::modifyInventoryItem(%this, %obj)
+{
+
+  %tag = %this.getObjTag(%obj);
+
+  %provider = %this.getBookProvider(%tag);
+
+  if (%provider $= "") return;
+
+  %obj.stored_tag = %tag;
+
+  if (!%this.tryRenameBookFromFile(%obj)) %provider.download(%tag);
+}
+
+
+// Rename an inventory item and set new bitmap if it's file exists in storage
+function BookMod::tryRenameBookFromFile(%this, %obj)
+{
+  %tag = %this.getObjTag(%obj);
+  %provider = %this.getBookProvider(%tag);
+
+  %file_name = %provider.getBookFilename(%tag);
+  echo("FN:", %file_name, %tag);
+
+  %file_read = new FileObject();
+  %result = %file_read.OpenForRead(%file_name);
+
+  if (%result) {
+    %line = %file_read.readline();
+    %obj.setText(%line);
+    %obj.setBitmap(%this.book_bitmap);
+    return 1;
+  }
+  return 0;
+}
+
 
 $book_mod_global = book_mod.getId();

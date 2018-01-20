@@ -10,9 +10,4 @@ function GuiInventoryItem::onMouseEnter(%this)
   $book_mod_global.setHighlightedItemId(%this.getId());
 }
 
-
-// Bind hotkey
-GlobalActionMap.bindObj(keyboard, "ctrl p", "tryReadHighlightedBook", $book_mod_global);
-
-// Schedule book renaming in containers
-$book_mod_global.schedule(1000, "setBookNamesInAllContainers");
+$book_mod_global.init();
