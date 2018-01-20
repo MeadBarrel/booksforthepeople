@@ -3,7 +3,7 @@ new ScriptObject(book_mod)
   class = BookMod;
   highlighted_item_id = -1;
   pastebin_web_prefix = "http://pastebin.com/raw/";
-  mod_folder = "art/mod/bookmod/";
+  mod_folder = "art/mod/booksforthepeople/";
   book_bitmap = "art/2d/items/pages.png";
 };
 
@@ -179,4 +179,4 @@ function GuiInventoryItem::onMouseEnter(%this)
 
 GlobalActionMap.bindObj(keyboard, "ctrl p", "tryReadBook", $book_mod_global);
 $book_mod_global.schedule(1000, "setBookNamesInAllContainers");
-//usage: exec("art/mod/bookmod/bookmod.cs");
+//usage: exec("art/mod/booksforthepeople/bookmod.cs");
