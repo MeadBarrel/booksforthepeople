@@ -58,6 +58,28 @@ function PasteProvider::getBookFilename(%this, %tag)
 }
 
 
+function PasteProvider::createPaste(%this)
+{
+    %t = openWeb(%this.create_paste_url);
+    echo(%t.getClassName());
+  
+    //%this.create_paste_window = openWeb(%this.create_paste_url);
+    %this.create_paste_window = new ScriptObject()
+    {
+      class = AwWebBrowser;
+      StartURL = %this.create_paste_url;
+    };
+    PlayGui.acceptsAsChild(%this.create_paste_window);
+    %this.schedule(1000, "trackCreatePasteWindow");
+}
+
+function PasteProvider::trackCreatePasteWindow(%this)
+{
+  echo("URL:", %this.create_paste_window.getCurrentURL());
+  //%this.schedule(1000, "trackCreatePasteWindow");
+}
+
+
 function PasteDownloader::download(%this, %tag)
 {
   echo("DOWNLOADING", %tag);

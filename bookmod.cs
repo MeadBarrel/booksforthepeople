@@ -1,10 +1,13 @@
 new ScriptObject(book_mod)
 {
   class = BookMod;
-  highlighted_item_id = -1;
+  highlighted_item_id = "";
   mod_folder = "art/mod/booksforthepeople/";
   book_bitmap = "art/2d/items/pages.png";
   pastebin_provider_obj = pastebin_provider.getId();
+  lifbookservice_provider_obj = lifbookservice_provider.getId()
+
+  default_provider = lifbookservice_provider.getId();
 
   modify_inventories_delay = 1000;
 };
@@ -15,7 +18,7 @@ function BookMod::init(%this)
 {
   %this.pastebin_provider_obj.init();
   %this.schedule(1000, "modifyInventories");
-  GlobalActionMap.bindObj(keyboard, "ctrl p", "tryReadHighlightedBook", %this);
+  GlobalActionMap.bindObj(keyboard, "ctrl p", "onKeyBind", %this);
 }
 
 
@@ -26,15 +29,25 @@ function BookMod::setHighlightedItemId(%this, %item_id)
 }
 
 
-// Try reading a highlighted book
-// If no provider found or no item highlighted, return 0
-function BookMod::tryReadHighlightedBook(%this, %keystate)
+// Keybind handler
+function BookMod::onKeyBind(%this, %keystate)
 {
   if (%keystate == 0) return 0;
+
   %obj = %this.highlighted_item_id;
 
+  if (%this.highlighted_item_id !$= "") %this.tryReadHighlightedBook();
+  else {echo("WTF");%this.default_provider.createPaste();}
+}
 
-  if (%this.highlighted_item_id > 0)
+
+// Try reading a highlighted book
+// If no provider found or no item highlighted, return 0
+function BookMod::tryReadHighlightedBook(%this)
+{
+  %obj = %this.highlighted_item_id;
+
+  if (%this.highlighted_item_id !$= "")
   {
 
     %tag = %this.getObjTag(%obj);
@@ -82,7 +95,7 @@ function BookMod::modifyInventories(%this)
       %this.modifyInventory(%obj);
     }
   }
-  %this.schedule(%this.modify_inventories_delay, "modifyInventories");
+  //%this.schedule(%this.modify_inventories_delay, "modifyInventories");
 
 }
 
