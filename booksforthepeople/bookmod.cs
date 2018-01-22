@@ -17,6 +17,7 @@ new ScriptObject(book_mod)
 function BookMod::init(%this)
 {
   %this.pastebin_provider_obj.init();
+  %this.lifbookservice_provider_obj.init();  
   %this.schedule(1000, "modifyInventories");
   GlobalActionMap.bindObj(keyboard, "ctrl p", "onKeyBind", %this);
 }
