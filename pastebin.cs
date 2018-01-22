@@ -5,5 +5,6 @@ new ScriptObject(pastebin_provider)
   class = PastebinProvider;
   prefix = "_p";
   base_url = "http://pastebin.com/raw/";
+  raw_url = "http://pastebin.com/raw/";
   create_paste_url = "http://pastebin.com";
 };

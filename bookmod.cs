@@ -5,7 +5,7 @@ new ScriptObject(book_mod)
   mod_folder = "art/mod/booksforthepeople/";
   book_bitmap = "art/2d/items/pages.png";
   pastebin_provider_obj = pastebin_provider.getId();
-  lifbookservice_provider_obj = lifbookservice_provider.getId()
+  lifbookservice_provider_obj = lifbookservice_provider.getId();
 
   default_provider = lifbookservice_provider.getId();
 
@@ -71,6 +71,8 @@ function BookMod::getBookProvider(%this, %tag)
 {
   if (%this.pastebin_provider_obj.isCorrectTag(%tag))
     return %this.pastebin_provider_obj;
+    if (%this.lifbookservice_provider_obj.isCorrectTag(%tag))
+      return %this.lifbookservice_provider_obj;
 }
 
 

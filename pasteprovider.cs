@@ -22,6 +22,14 @@ function PasteProvider::getBookUrl(%this, %tag)
 }
 
 
+function PasteProvider::getRawBookUrl(%this, %tag)
+{
+  %book_id = %this.getBookId(%tag);
+  return %this.raw_url @ %book_id;
+}
+
+
+
 function PasteProvider::getBookId(%this, %tag)
 {
   %prefix_len = strlen(%this.prefix);
@@ -62,7 +70,7 @@ function PasteProvider::createPaste(%this)
 {
     %t = openWeb(%this.create_paste_url);
     echo(%t.getClassName());
-  
+
     //%this.create_paste_window = openWeb(%this.create_paste_url);
     %this.create_paste_window = new ScriptObject()
     {
@@ -85,9 +93,10 @@ function PasteDownloader::download(%this, %tag)
   echo("DOWNLOADING", %tag);
   %download_helper = new SimDownloadHelper()
   {
-    url = %this.provider.getBookUrl(%this.tag);
+    url = %this.provider.getRawBookUrl(%this.tag);
     fileName = %this.provider.getBookFilename(%this.tag);
   };
+  echo("URL:", %download_helper.url);
   echo("FILENAME", %download_helper.fileName);
   %download_helper.start();
 }
