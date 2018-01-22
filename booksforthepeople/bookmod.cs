@@ -97,7 +97,7 @@ function BookMod::modifyInventories(%this)
       %this.modifyInventory(%obj);
     }
   }
-  //%this.schedule(%this.modify_inventories_delay, "modifyInventories");
+  %this.schedule(%this.modify_inventories_delay, "modifyInventories");
 
 }
 
