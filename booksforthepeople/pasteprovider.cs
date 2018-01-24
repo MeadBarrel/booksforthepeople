@@ -80,7 +80,6 @@ function PasteDownloader::download(%this, %tag)
     url = %this.provider.getRawBookUrl(%this.tag);
     fileName = %this.provider.getBookFilename(%this.tag);
   };
-  echo("URL:", %download_helper.url);
-  echo("FILENAME", %download_helper.fileName);
+  echo("Downloading", %download_helper.url, "to", %download_helper.fileName);
   %download_helper.start();
 }

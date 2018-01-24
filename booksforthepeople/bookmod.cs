@@ -17,7 +17,7 @@ new ScriptObject(book_mod)
 function BookMod::init(%this)
 {
   %this.pastebin_provider_obj.init();
-  %this.lifbookservice_provider_obj.init();  
+  %this.lifbookservice_provider_obj.init();
   %this.schedule(1000, "modifyInventories");
   GlobalActionMap.bindObj(keyboard, "ctrl p", "onKeyBind", %this);
 }
@@ -38,7 +38,7 @@ function BookMod::onKeyBind(%this, %keystate)
   %obj = %this.highlighted_item_id;
 
   if (%this.highlighted_item_id !$= "") %this.tryReadHighlightedBook();
-  else {echo("WTF");%this.default_provider.createPaste();}
+  else %this.default_provider.createPaste();
 }
 
 
@@ -88,7 +88,6 @@ function BookMod::getObjTag(%this, %obj)
 // Iterate over player's inventories and change books titles and icons
 function BookMod::modifyInventories(%this)
 {
-  echo("Setting book names");
   %i_max = PlayGui.getCount();
   for (%i=0;%i<%i_max;%i++)
   {
@@ -139,7 +138,6 @@ function BookMod::tryRenameBookFromFile(%this, %obj)
   %provider = %this.getBookProvider(%tag);
 
   %file_name = %provider.getBookFilename(%tag);
-  echo("FN:", %file_name, %tag);
 
   %file_read = new FileObject();
   %result = %file_read.OpenForRead(%file_name);
