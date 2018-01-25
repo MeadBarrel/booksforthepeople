@@ -24,7 +24,7 @@ function PasteProvider::getBookUrl(%this, %tag)
 
 function PasteProvider::getRawBookUrl(%this, %tag)
 {
-  %book_id = %this.getBookId(%tag);
+  %book_id = strreplace(%this.getBookId(%tag), " ", "");
   return %this.raw_url @ %book_id;
 }
 
